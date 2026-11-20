@@ -26,8 +26,8 @@ app.MapPost("/api/upload", async (IFormFile file, IConfiguration config) =>
 {
     var container = new BlobContainerClient(config.GetConnectionString("BlobStorage"), "uploads");
     await container.CreateIfNotExistsAsync();
-
-    var blob = container.GetBlobClient($"{Guid.NewGuid()}-{file.FileName}");
+    var blob = container.GetBlobClient($"{Guid.NewGuid()}-{BlobNaming.Sanitize(file.FileName)}");
+    //var blob = container.GetBlobClient($"{Guid.NewGuid()}-{file.FileName}");
     await using var stream = file.OpenReadStream();
     await blob.UploadAsync(stream);
 
@@ -35,3 +35,4 @@ app.MapPost("/api/upload", async (IFormFile file, IConfiguration config) =>
 }).DisableAntiforgery();
 
 app.Run();
+public partial class Program { }
